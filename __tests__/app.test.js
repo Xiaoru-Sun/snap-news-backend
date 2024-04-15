@@ -3,6 +3,7 @@ const seed = require("../db/seeds/seed.js")
 const testData = require("../db/data/test-data/index.js")
 const db = require("../db/connection.js")
 const request = require("supertest")
+const requiredEndpoints = require("../endpoints.json")
 
 afterAll(() => {
     return db.end()
@@ -45,12 +46,13 @@ describe("getApi", () => {
         .expect(200)
         .then(({body}) => {
             const {endpoints} = body;
-            Object.keys(endpoints).forEach( (key) => {
-                expect(typeof endpoints[key]["description"]).toBe("string");
-                expect(Array.isArray(endpoints[key]["queries"])).toBe(true);
-                expect(endpoints[key]["exampleResponse"]).not.toBe("null");
-                expect(endpoints[key]["exampleResponse"].constructor === Object).toBe(true)
-            })
+            expect(endpoints).toEqual(requiredEndpoints)
+            // Object.keys(endpoints).forEach( (key) => {
+            //     expect(typeof endpoints[key]["description"]).toBe("string");
+            //     expect(Array.isArray(endpoints[key]["queries"])).toBe(true);
+            //     expect(endpoints[key]["exampleResponse"]).not.toBe("null");
+            //     expect(endpoints[key]["exampleResponse"].constructor === Object).toBe(true)
+            // })
         })
     })
 })
