@@ -10,11 +10,14 @@ function getTopics(req, res, next){
 
 
 function getApi(req, res, next){
-    return fs.readFile("./endpoints.json", "utf-8").then((fileContents) => {
-        //console.log(fileContents)
-        const parsedContents = JSON.parse(fileContents);
-        res.status(200).send({endpoints : parsedContents})
-    }).catch(next)
+    // return fs.readFile("./endpoints.json", "utf-8").then((fileContents) => {
+    //     //console.log(fileContents)
+    //     const parsedContents = JSON.parse(fileContents);
+    //     res.status(200).send({endpoints : parsedContents})
+    // }).catch(next)
+
+    const endpoints = require("../endpoints.json")
+    res.status(200).send({endpoints: endpoints})
 }
 
 
