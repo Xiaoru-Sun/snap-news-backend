@@ -18,7 +18,7 @@ describe("/api/topics", () => {
         .get("/api/topics")
         .expect(200)
         .then(({body})=> {
-            const allTopics = body;
+            const allTopics = body.topics;
             expect(allTopics.length).toBe(3);
             allTopics.forEach(topic => {
                 expect(typeof topic.slug).toBe("string");
@@ -36,7 +36,22 @@ describe("/api/topics", () => {
             expect(msg).toBe("Not found")
         })
     })
-    
+})
 
+describe("getApi", () => {
+    test("Respond with an object describing all the available endpoints on your API, and each key has description, queries, exampleResponse keys", () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({body}) => {
+            const {endpoints} = body;
+            Object.keys(endpoints).forEach( (key) => {
+                expect(typeof endpoints[key]["description"]).toBe("string");
+                expect(Array.isArray(endpoints[key]["queries"])).toBe(true);
+                expect(endpoints[key]["exampleResponse"]).not.toBe("null");
+                expect(endpoints[key]["exampleResponse"].constructor === Object).toBe(true)
+            })
+        })
+    })
 })
 
