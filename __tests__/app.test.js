@@ -55,3 +55,36 @@ describe("getApi", () => {
     })
 })
 
+describe("getArticleById", () => {
+    test("Respond with an object of the specic article when sending a valid article_id", () => {
+        return request(app)
+        .get("/api/articles/4")
+        .expect(200)
+        .then(({body}) => {
+            const { article } = body;
+            expect(article.article_id).toBe(4);
+        })
+    })
+
+    test("Respond with 404 error when sending a valid but non-existent id ", () => {
+        return request(app)
+        .get("/api/articles/99999")
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Not found, article_id does not exist");
+        })
+    })
+
+    test("Respond with 400 error when sending an invalid id", () => {
+        return request(app)
+        .get("/api/articles/newarticle")
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request");
+        })
+    })
+
+})
+
