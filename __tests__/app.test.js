@@ -79,7 +79,7 @@ describe("getArticleById", () => {
     test("Respond with 400 error when sending an invalid id", () => {
         return request(app)
         .get("/api/articles/newarticle")
-        .expect(404)
+        .expect(400)
         .then(({body}) => {
             const { msg } = body;
             expect(msg).toBe("Bad request");
