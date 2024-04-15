@@ -12,6 +12,7 @@ beforeAll(() => {
 })
 
 describe("/api/topics", () => {
+//requesting all topics, happy path
     test("Respond with an array of topic objects, each of which should slug and description property", () => {
         return request(app)
         .get("/api/topics")
@@ -25,7 +26,17 @@ describe("/api/topics", () => {
             })
         })
     })
-
+//requesting all topics sending invalid route
+    test("Respond with 404 error", () => {
+        return request(app)
+        .get("/api/cats")
+        .expect(404)
+        .then(({body})=> {
+            const {msg} = body
+            expect(msg).toBe("Not found")
+        })
+    })
+    
 
 })
 
