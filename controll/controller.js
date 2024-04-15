@@ -1,4 +1,4 @@
-const { fetchTopics } = require("../model/model")
+const { fetchTopics, fetchArticleById } = require("../model/model")
 const fs = require("fs/promises")
 
 
@@ -17,4 +17,15 @@ function getApi(req, res, next){
     }).catch(next)
 }
 
-module.exports = { getTopics, getApi }
+
+function getArticleById(req, res, next){
+    const {article_id} = req.params;
+    fetchArticleById(article_id).then((requestedArticle) => {
+        res.status(200).send({article: requestedArticle })
+    })
+    .catch(next)
+}
+
+
+
+module.exports = { getTopics, getApi, getArticleById }
