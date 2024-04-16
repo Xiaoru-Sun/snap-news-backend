@@ -31,4 +31,26 @@ function fetchArticles(){
         return rows;
     })
 }
-module.exports = { fetchTopics, fetchArticleById, fetchArticles }
+
+function fetchCommentsByArticleId(article_id){
+    const sqlStr = `SELECT * FROM comments
+    WHERE article_id = $1
+    ORDER BY created_at DESC;`
+    return db.query(sqlStr, [article_id]).then(({rows}) => {
+        return rows;
+    })
+}
+
+function doesArticleExist(article_id){
+    const sqlStr = `SELECT * FROM articles WHERE article_id = $1;`
+    return db.query(sqlStr, [article_id]).then(({rows}) => {
+        if(rows.length === 0){
+            return Promise.reject({
+                "status": 404,
+                "msg": "Article_id not found!"
+            })
+        }
+    })
+}
+
+module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist }

@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticleById, fetchArticles } = require("../model/model")
+const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist } = require("../model/model")
 const fs = require("fs/promises")
 
 
@@ -37,6 +37,16 @@ function getArticles(req, res, next){
     .catch(next)
 }
 
+function getCommentsByArticleId(req, res, next){
+    const {article_id} = req.params;
+    Promise.all([doesArticleExist(article_id), fetchCommentsByArticleId(article_id)])
+    .then(([_, comments]) => { 
+        res.status(200).send({comments : comments})
+    })
+    .catch(next)
+}
 
 
-module.exports = { getTopics, getApi, getArticleById, getArticles }
+
+
+module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId }
