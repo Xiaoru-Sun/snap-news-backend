@@ -181,3 +181,57 @@ describe("GET/api/articles/:article_id/comments", () => {
 
 })
 
+describe("POST/api/articles/:article_id/comments", () => {
+    test("Respond with an object of the posted comment when the provided article_id is existent and request body has values on username and body keys", () => {
+        const commentToPost = {
+            username: "rogersop",
+            body: "Cinamon spieced tea is the best match for it!"
+        }
+        return request(app)
+        .post("/api/articles/7/comments")
+        .send(commentToPost)
+        .expect(200)
+        .then(({body}) => {
+            const { postedComment } = body;
+            expect(postedComment.author).toBe(commentToPost.username);
+            expect(postedComment.body).toBe(commentToPost.body);
+            expect(postedComment.votes).toBe(0);
+            expect(postedComment.article_id).toBe(7);
+            expect(typeof postedComment.created_at).toBe("string");
+        })
+     })
+
+
+     test("Respond with 400 Error when the provided article_id is existent but one key is missing", () => {
+        const commentToPost = {
+            username: "rogersop",
+        }
+        return request(app)
+        .post("/api/articles/7/comments")
+        .send(commentToPost)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+        })
+     })
+
+     test("Respond with 400 Error when article_id is non existent", () => {
+        const commentToPost = {
+            username: "rogersop",
+            body:"Cinamon spieced tea is the best match for it!"
+        }
+        return request(app)
+        .post("/api/articles/9999/comments")
+        .send(commentToPost)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+        })
+     })
+
+
+
+})
+

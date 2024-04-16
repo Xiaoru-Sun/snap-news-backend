@@ -1,4 +1,5 @@
 const db = require("../db/connection")
+const format = require("pg-format")
 
 function fetchTopics(){
     return db.query(`SELECT * FROM topics;`).then(({rows}) => {
@@ -53,4 +54,19 @@ function doesArticleExist(article_id){
     })
 }
 
-module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist }
+function insertCommentsByArticleId(article_id, username, body){
+    const votes = 0
+    const created_at = new Date()
+    const myNestedArray = [[body,username, article_id, votes, created_at ]]
+    const sqlStr = format(`INSERT INTO comments
+    (body, author, article_id, votes, created_at)
+    VALUES %L RETURNING *;`, myNestedArray)
+    return db.query(sqlStr).then(({rows}) => {
+
+        return rows[0];
+
+    })
+}
+
+
+module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId }
