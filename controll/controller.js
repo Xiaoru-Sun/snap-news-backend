@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist } = require("../model/model")
+const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId } = require("../model/model")
 const fs = require("fs/promises")
 
 
@@ -47,6 +47,15 @@ function getCommentsByArticleId(req, res, next){
 }
 
 
+function postCommentsByArticleId(req, res, next){
+    const {article_id} = req.params;
+    const {username} = req.body;
+    const {body} = req.body
+    insertCommentsByArticleId(article_id, username,body).then((newComment) => {
+        res.status(200).send({postedComment: newComment})
+    }).catch(next)
+}
 
 
-module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId }
+
+module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId}

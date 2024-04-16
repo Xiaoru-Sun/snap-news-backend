@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
-const { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId} = require("./controll/controller")
+const { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId} = require("./controll/controller")
 
+app.use(express.json())
 app.get('/api/topics', getTopics)
 
 app.get('/api', getApi)
@@ -11,6 +12,8 @@ app.get('/api/articles/:article_id', getArticleById)
 app.get('/api/articles', getArticles)
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
+
+app.post('/api/articles/:article_id/comments', postCommentsByArticleId)
 
 //route for handling all invalid route
 app.get("*", (req, res, next) => {
