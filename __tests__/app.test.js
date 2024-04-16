@@ -113,7 +113,7 @@ describe("GET/api/articles", () => {
         })
     })
 
-    test("Respond with an array of articles that is sorted by age in descending order", () => {
+    test("Respond with an array of articles that is sorted by date in descending order", () => {
         return request(app)
         .get("/api/articles")
         .expect(200)
@@ -125,5 +125,59 @@ describe("GET/api/articles", () => {
 })
 
 
+describe("GET/api/articles/:article_id/comments", () => {
+//Both User-provided article_id and its comments are existent
+    test("Respond with an array of comments sorted by created_at in DESC order, and each comment should have all the keys", () => {
+        return request(app)
+        .get("/api/articles/9/comments")
+        .expect(200)
+        .then(({body}) => {
+            const { comments } = body;
+            expect(comments.length).toBe(testData.commentData.filter(comment => comment.article_id === 9).length);
+            expect(comments).toBeSortedBy("created_at", {descending: true})
+            comments.forEach(comment => {
+                expect(typeof comment.comment_id).toBe("number");
+                expect(typeof comment.votes).toBe("number");
+                expect(typeof comment.created_at).toBe("string");
+                expect(typeof comment.author).toBe("string");
+                expect(typeof comment.body).toBe("string");
+                expect(typeof comment.article_id).toBe("number");
+            })
+        })
+    })
 
+//User-provided article_id exists but comments are non-existent
+    test("Respond with an empty array when the given article has zero comments", () => {
+        return request(app)
+        .get("/api/articles/8/comments")
+        .expect(200)
+        .then(({body}) => {
+            const { comments } = body;
+            expect(comments.length).toBe(0);
+        })
+
+    })
+//User-provided article_id is non-existent
+    test("Respond with 404 Error when the given article_id is not-existent", () => {
+        return request(app)
+        .get("/api/articles/9999/comments")
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Article_id not found!");
+        })
+    })
+
+//User-provided article_id is not valid
+    test("Respond with 400 Error when the given article_id is not valid", () => {
+        return request(app)
+        .get("/api/articles/idnumber/comments")
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request");
+        })
+    })
+
+})
 
