@@ -19,4 +19,16 @@ function fetchArticleById(article_id){
     })
 }
 
-module.exports = { fetchTopics, fetchArticleById }
+
+function fetchArticles(){
+    const sqlStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST (COUNT(comments.body) AS INT) as comment_count
+    FROM articles
+    LEFT JOIN comments ON articles.article_id = comments.article_id
+    GROUP by articles.article_id
+    ORDER BY created_at DESC;`
+
+    return db.query(sqlStr).then(({rows}) => {
+        return rows;
+    })
+}
+module.exports = { fetchTopics, fetchArticleById, fetchArticles }
