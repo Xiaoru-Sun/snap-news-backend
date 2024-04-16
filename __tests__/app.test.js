@@ -5,6 +5,7 @@ const db = require("../db/connection.js")
 const request = require("supertest")
 const requiredEndpoints = require("../endpoints.json")
 
+
 afterAll(() => {
     return db.end()
 })
@@ -87,6 +88,42 @@ describe("getArticleById", () => {
             expect(msg).toBe("Bad request");
         })
     })
-
 })
+
+describe("GET/api/articles", () => {
+    test("Respond with an array of articles, each of which contains all the keys", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(testData.articleData.length)
+            articles.forEach((article) => {
+                expect(typeof article.article_id).toBe("number");
+                expect(typeof article.author).toBe("string");
+                expect(typeof article.title).toBe("string");
+                expect(typeof article.topic).toBe("string");
+                expect(typeof article.created_at).toBe("string")
+                expect(typeof article.votes).toBe("number");
+                expect(typeof article.article_img_url).toBe("string");
+                expect(typeof article.comment_count).toBe("number");
+                expect(Object.keys(articles).includes("body")).toBe(false)
+
+            })
+        })
+    })
+
+    test("Respond with an array of articles that is sorted by age in descending order", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles).toBeSortedBy("created_at", { descending: true })
+        })
+    })
+})
+
+
+
 
