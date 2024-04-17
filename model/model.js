@@ -11,7 +11,13 @@ function fetchTopics(){
 }
 
 function fetchArticleById(article_id){
-    const sqlStr = `SELECT * FROM articles WHERE article_id=$1;`
+    const sqlStr = `SELECT filtered.*, CAST (COUNT(comments.body) AS INT) as comment_count
+    FROM (
+        SELECT * FROM articles 
+        WHERE article_id = $1) AS filtered
+    LEFT JOIN comments ON comments
+    .article_id = filtered.article_id
+    GROUP by filtered.article_id, filtered.title, filtered.topic, filtered.author, filtered.body, filtered.created_at, filtered.votes, filtered.article_img_url;`
     return db.query(sqlStr, [article_id]).then(({rows}) => {
         if (rows.length === 0){
             return Promise.reject({
