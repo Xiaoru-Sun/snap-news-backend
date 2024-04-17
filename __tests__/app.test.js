@@ -247,6 +247,7 @@ describe.only("PATCH/api/articles/:article_id", () => {
         })
     })
 
+
     test("Respond with 404 Error when article_id is numeric but non-existent", () => {
         const patchBody = { inc_votes : 2 }
         return request(app)
@@ -295,5 +296,34 @@ describe.only("PATCH/api/articles/:article_id", () => {
             expect(msg).toEqual("Bad request")
         })
     })
+
+})
+
+
+describe.only("DELETE/api/comments/:comment_id", () => {
+    test("Respond with 204", () => {
+        return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+    })
+    test("Respond with 400 error when comment_id is not a number", () => {
+        return request(app)
+        .delete("/api/comments/notanumberhere")
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+        })
+    })
+    test("Respond with 404 error when comment_id is numeric but non-existent", () => {
+        return request(app)
+        .delete("/api/comments/9999")
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Comment_id not found")
+        })
+    })
+
 
 })

@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById } = require("../model/model")
+const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById } = require("../model/model")
 const fs = require("fs/promises")
 
 
@@ -66,4 +66,12 @@ function patchArticleById(req, res, next){
 
 }
 
-module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById}
+function removeCommentById(req, res, next){
+    const {comment_id} = req.params;
+    deleteCommentById(comment_id).then(()=> {
+        res.status(204).end();
+    }).catch(next)
+
+}
+
+module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById}
