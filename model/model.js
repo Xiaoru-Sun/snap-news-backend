@@ -62,11 +62,18 @@ function insertCommentsByArticleId(article_id, username, body){
     (body, author, article_id, votes, created_at)
     VALUES %L RETURNING *;`, myNestedArray)
     return db.query(sqlStr).then(({rows}) => {
-
         return rows[0];
-
     })
 }
 
+function updateArticleById(article_id, inc_votes){
+    const sqlStr = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`
+    return db.query(sqlStr, [inc_votes, article_id]).then(({rows}) => {
+        return rows[0]
+    })
 
-module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId }
+}
+
+
+
+module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById }
