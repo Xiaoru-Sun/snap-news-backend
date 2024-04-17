@@ -86,6 +86,13 @@ function deleteCommentById(comment_id){
     })
 }
 
+function fetchUsers(){
+    const sqlStr = format('SELECT * FROM %I;', "users")
+    return db.query(sqlStr).then(({rows}) => {
+        return rows;
+    })
+}
 
 
-module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById }
+
+module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers }
