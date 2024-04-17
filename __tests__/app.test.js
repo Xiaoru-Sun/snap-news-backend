@@ -233,7 +233,7 @@ describe("POST/api/articles/:article_id/comments", () => {
 })
 
 
-describe.only("PATCH/api/articles/:article_id", () => {
+describe("PATCH/api/articles/:article_id", () => {
     test("Respond with an object of the updated article when article_id is existent and partchBody has a positive number on 'inc_votes' key", () => {
         const patchBody = { inc_votes : 1 }
         const { inc_votes } = patchBody;
@@ -300,7 +300,7 @@ describe.only("PATCH/api/articles/:article_id", () => {
 })
 
 
-describe.only("DELETE/api/comments/:comment_id", () => {
+describe("DELETE/api/comments/:comment_id", () => {
     test("Respond with 204", () => {
         return request(app)
         .delete("/api/comments/1")
