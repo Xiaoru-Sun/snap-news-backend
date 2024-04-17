@@ -1,6 +1,8 @@
 const db = require("../db/connection")
 const format = require("pg-format");
 const topics = require("../db/data/test-data/topics");
+const testData = require("../db/data/test-data/index.js");
+const { query } = require("express");
 
 function fetchTopics(){
     return db.query(`SELECT * FROM topics;`).then(({rows}) => {
@@ -55,12 +57,23 @@ function doesArticleExist(article_id){
 }
 
 function insertCommentsByArticleId(article_id, username, body){
-    const votes = 0
-    const created_at = new Date()
-    const myNestedArray = [[body,username, article_id, votes, created_at ]]
-    const sqlStr = format(`INSERT INTO comments
-    (body, author, article_id, votes, created_at)
-    VALUES %L RETURNING *;`, myNestedArray)
+
+    const queryVals = [body];
+    const validUserNames = testData.userData.map(user => user.username);
+    if(!validUserNames.includes(username)){
+        return Promise.reject({
+            status: 404,
+            msg : "Username is not found"
+        })
+    } else {
+        queryVals.push(username)
+    }
+    queryVals.push(article_id)
+
+    const sqlStr = format(`INSERT INTO %I
+    (body, author, article_id)
+    VALUES %L RETURNING *;`, "comments", [queryVals])
+
     return db.query(sqlStr).then(({rows}) => {
         return rows[0];
     })

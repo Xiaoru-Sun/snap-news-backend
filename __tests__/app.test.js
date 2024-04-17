@@ -182,9 +182,9 @@ describe("GET/api/articles/:article_id/comments", () => {
 })
 
 describe("POST/api/articles/:article_id/comments", () => {
-    test("Respond with an object of the posted comment when the provided article_id is existent and request body has values on username and body keys", () => {
+    test("Respond with an object of the posted comment when the provided article_id is existent, username is existent and body key has value", () => {
         const commentToPost = {
-            username: "rogersop",
+            username: testData.userData[0].username,
             body: "Cinamon spieced tea is the best match for it!"
         }
         return request(app)
@@ -193,6 +193,7 @@ describe("POST/api/articles/:article_id/comments", () => {
         .expect(200)
         .then(({body}) => {
             const { postedComment } = body;
+            expect(typeof postedComment.comment_id).toBe("number")
             expect(postedComment.author).toBe(commentToPost.username);
             expect(postedComment.body).toBe(commentToPost.body);
             expect(postedComment.votes).toBe(0);
@@ -201,13 +202,13 @@ describe("POST/api/articles/:article_id/comments", () => {
         })
      })
 
-
-     test("Respond with 400 Error when the provided article_id is existent but one key is missing", () => {
+     test("Respond with 400 error when the provided article_id is not numeric", () => {
         const commentToPost = {
-            username: "rogersop",
+            username: testData.userData[1].username,
+            body: "Cinamon spieced tea is the best match for it!"
         }
         return request(app)
-        .post("/api/articles/7/comments")
+        .post("/api/articles/notanid/comments")
         .send(commentToPost)
         .expect(400)
         .then(({body}) => {
@@ -216,20 +217,72 @@ describe("POST/api/articles/:article_id/comments", () => {
         })
      })
 
-     test("Respond with 400 Error when article_id is non existent", () => {
+/*article_id is an foreign key in comments table, when attempting to insert this non-exisitent article_id 
+sql throws an error, the code of which is 23503
+either use doesArticleExist to throw a error, or alternatively add an error handling function particularly for 23503
+*/
+
+     test("Respond with 404 error when article_id is numeric but non-existent", () => {
         const commentToPost = {
-            username: "rogersop",
+            username: testData.userData[1].username,
             body:"Cinamon spieced tea is the best match for it!"
         }
         return request(app)
         .post("/api/articles/9999/comments")
         .send(commentToPost)
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Article_id not found!")
+        })
+     })
+
+
+     test("Respond with 404 error when request body sends an non-existent username", () => {
+        const commentToPost = {
+            username: "unknownusername1234",
+            body:"Cinamon spieced tea is the best match for it!"
+        }
+        return request(app)
+        .post("/api/articles/9/comments")
+        .send(commentToPost)
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Username is not found")
+        })
+     })
+
+     test("Respond with 400 error when request does not have body key", () => {
+        const commentToPost = {
+            username: testData.userData[2].username,
+            nobody: "I do not have a key called body"
+        }
+        return request(app)
+        .post("/api/articles/9/comments")
+        .send(commentToPost)
         .expect(400)
         .then(({body}) => {
             const { msg } = body;
-            expect(msg).toBe("Bad request")
+            expect(msg).toBe("Assignment of a Null value to a Not Null Column")
         })
      })
+
+     test("Respond with 404 error when request does not username key", () => {
+        const commentToPost = {
+            myname: testData.userData[2].username,
+            nobody: "I do not have a key called body"
+        }
+        return request(app)
+        .post("/api/articles/9/comments")
+        .send(commentToPost)
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Username is not found")
+        })
+     })
+
 })
 
 
@@ -348,7 +401,7 @@ describe("GET/api/users", () => {
 })
 
 
-describe("GET/api/articles?topic", () => {
+describe("GET/api/articles?topicquery", () => {
     test("Respond with an array of articles, each article is for the specified topic", () => {
         return request(app)
         .get("/api/articles?topic=mitch")

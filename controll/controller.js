@@ -58,11 +58,12 @@ function getCommentsByArticleId(req, res, next){
 
 
 function postCommentsByArticleId(req, res, next){
-    const {article_id} = req.params;
-    const {username} = req.body;
-    const {body} = req.body
-    insertCommentsByArticleId(article_id, username, body).then((newComment) => {
-        res.status(200).send({postedComment: newComment})
+    const { article_id } = req.params;
+    const { username } = req.body;
+    const { body } = req.body
+    Promise.all([doesArticleExist(article_id), insertCommentsByArticleId(article_id, username, body)])
+    .then(([_, newComment]) => {
+        res.status(200).send({ postedComment: newComment })
     }).catch(next)
 }
 
