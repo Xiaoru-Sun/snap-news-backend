@@ -1,4 +1,5 @@
-const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById } = require("../model/model")
+const users = require("../db/data/test-data/users")
+const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers } = require("../model/model")
 const fs = require("fs/promises")
 
 
@@ -74,4 +75,11 @@ function removeCommentById(req, res, next){
 
 }
 
-module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById}
+
+function getUsers(req, res, next){
+    fetchUsers().then((users) => {
+        res.status(200).send({users : users})
+    }).catch(next)
+
+}
+module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById, getUsers}
