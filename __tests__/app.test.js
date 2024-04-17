@@ -230,8 +230,70 @@ describe("POST/api/articles/:article_id/comments", () => {
             expect(msg).toBe("Bad request")
         })
      })
-
-
-
 })
 
+
+describe.only("PATCH/api/articles/:article_id", () => {
+    test("Respond with an object of the updated article when article_id is existent and partchBody has a positive number on 'inc_votes' key", () => {
+        const patchBody = { inc_votes : 1 }
+        const { inc_votes } = patchBody;
+        return request(app)
+        .patch("/api/articles/1")
+        .send(patchBody)
+        .expect(200)
+        .then(({body}) => {
+            const { updatedArticle } = body;
+            expect(updatedArticle.votes).toBe(testData.articleData[0].votes + inc_votes)
+        })
+    })
+
+    test("Respond with 404 Error when article_id is numeric but non-existent", () => {
+        const patchBody = { inc_votes : 2 }
+        return request(app)
+        .patch("/api/articles/9999")
+        .send(patchBody)
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toEqual("Article_id not found!")
+        })
+    })
+
+    test("Respond with 400 Error when article_id is not numeric", () => {
+        const patchBody = { inc_votes : 2 }
+        return request(app)
+        .patch("/api/articles/idid")
+        .send(patchBody)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toEqual("Bad request")
+        })
+    })
+
+    test("Respond with 400 Error when article_id is existent but patchBody doesn't have 'inc_votes' key", () => {
+        const patchBody = { votes : 2 }
+        return request(app)
+        .patch("/api/articles/1")
+        .send(patchBody)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toEqual("Assignment of a Null value to a Not Null Column")
+        })
+    })
+
+
+    test("Respond with 400 Error when article_id is existent but patchBody has a string on 'inv_votes' key", () => {
+        const patchBody = { inc_votes : "value" }
+        return request(app)
+        .patch("/api/articles/1")
+        .send(patchBody)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toEqual("Bad request")
+        })
+    })
+
+})
