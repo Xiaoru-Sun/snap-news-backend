@@ -1,5 +1,6 @@
 const db = require("../db/connection")
-const format = require("pg-format")
+const format = require("pg-format");
+const topics = require("../db/data/test-data/topics");
 
 function fetchTopics(){
     return db.query(`SELECT * FROM topics;`).then(({rows}) => {
@@ -27,7 +28,6 @@ function fetchArticles(){
     LEFT JOIN comments ON articles.article_id = comments.article_id
     GROUP by articles.article_id
     ORDER BY created_at DESC;`
-
     return db.query(sqlStr).then(({rows}) => {
         return rows;
     })
@@ -93,6 +93,25 @@ function fetchUsers(){
     })
 }
 
+function fetchArticleByTopic(topic){
+    const sqlStr = format('SELECT * FROM %I WHERE topic = $1;', "articles");
+    return db.query(sqlStr, [topic]).then(({rows}) => {
+        return rows;
+    })
+}
+
+function doesTopicExist(topic){
+    const sqlStr = format('SELECT * FROM %I WHERE slug = $1;', 'topics')
+    return db.query(sqlStr, [topic]).then(({rows}) => {
+        if (rows.length === 0){
+            return Promise.reject({
+                status: 404,
+                msg: "Topic not found"
+            })
+        }
+    })
+}
 
 
-module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers }
+
+module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, fetchArticleByTopic, doesTopicExist}

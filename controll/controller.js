@@ -1,5 +1,5 @@
 const users = require("../db/data/test-data/users")
-const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers } = require("../model/model")
+const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, fetchArticleByTopic, doesTopicExist } = require("../model/model")
 const fs = require("fs/promises")
 
 
@@ -32,11 +32,20 @@ function getArticleById(req, res, next){
 
 
 function getArticles(req, res, next){
-    fetchArticles().then((arrayOfArticles) => {
-        res.status(200).send({articles : arrayOfArticles})
-    })
-    .catch(next)
+    const { topic } = req.query
+    if (!topic){
+        fetchArticles().then((arrayOfArticles) => {
+            res.status(200).send({articles : arrayOfArticles})
+        })
+        .catch(next)
+    } else {
+        Promise.all([doesTopicExist(topic), fetchArticleByTopic(topic)]).then(([_, articles]) => {
+            res.status(200).send({artilesOfThisTopic: articles})
+        }).catch(next)
+    }
 }
+
+
 
 function getCommentsByArticleId(req, res, next){
     const {article_id} = req.params;
@@ -82,4 +91,7 @@ function getUsers(req, res, next){
     }).catch(next)
 
 }
+
+
+
 module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById, getUsers}
