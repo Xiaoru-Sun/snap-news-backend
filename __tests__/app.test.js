@@ -329,7 +329,7 @@ describe("DELETE/api/comments/:comment_id", () => {
 })
 
 
-describe.only("GET/api/users", () => {
+describe("GET/api/users", () => {
     test("Respond with an array of objects, and each object has all the necessary keys", () => {
         return request(app)
         .get("/api/users")
@@ -346,3 +346,40 @@ describe.only("GET/api/users", () => {
     })
 
 })
+
+
+describe("GET/api/articles?topic", () => {
+    test("Respond with an array of articles, each article is for the specified topic", () => {
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({body}) => {
+            const { artilesOfThisTopic } = body;
+            expect(artilesOfThisTopic.length).toBe(testData.articleData.filter(item => item.topic === "mitch").length)
+        })
+    })
+
+    test("Respond with an empty array when the given topic exists but there is no associated article", () => {
+        return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({body}) => {
+            const { artilesOfThisTopic } = body;
+            expect(artilesOfThisTopic.length).toBe(0)
+        })
+    })
+
+    test("Respond with 404 error when the given topic is non-existent ", () => {
+        return request(app)
+        .get("/api/articles?topic=tech")
+        .expect(404)
+        .then(({body}) => {
+        const { msg } = body;
+        expect(msg).toBe("Topic not found")            
+        })
+    })
+
+})
+
+
+
