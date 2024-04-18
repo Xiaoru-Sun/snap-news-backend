@@ -329,7 +329,7 @@ describe("DELETE/api/comments/:comment_id", () => {
 })
 
 
-describe.only("GET/api/users", () => {
+describe("GET/api/users", () => {
     test("Respond with an array of objects, and each object has all the necessary keys", () => {
         return request(app)
         .get("/api/users")
