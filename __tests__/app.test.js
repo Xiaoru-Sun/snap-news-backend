@@ -435,4 +435,18 @@ describe("GET/api/articles?topicquery", () => {
 })
 
 
+describe("GET/api/articles/:article_id(comment_count)", () => {
+    test("Repond with an object of an article with comment_count property when article_id exists", () =>{
+        return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({body}) => {
+            const { article } = body;
+            expect(article.article_id).toBe(1)
+            expect(typeof article.comment_count).toBe("number");
+            expect(article.comment_count).toBe(testData.commentData.filter(comment => comment.article_id === 1).length)
+        })
+    })
+})
+
 
