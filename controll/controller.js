@@ -1,5 +1,5 @@
 const users = require("../db/data/test-data/users")
-const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, fetchArticleByTopic, doesTopicExist } = require("../model/model")
+const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers } = require("../model/model")
 const fs = require("fs/promises")
 
 
