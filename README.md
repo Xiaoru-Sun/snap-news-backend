@@ -38,7 +38,7 @@ To seed the production database, please run
 Each time you run tests, the test database will be seeded automatically. To run tests, please use:
 "npm test"
 
-5. Minimum versions
+6. Minimum versions
 Node.js: v21.6.1.
 PostgresSQL: 14.11
 
