@@ -407,8 +407,8 @@ describe("GET/api/articles?topicquery", () => {
         .get("/api/articles?topic=mitch")
         .expect(200)
         .then(({body}) => {
-            const { artilesOfThisTopic } = body;
-            expect(artilesOfThisTopic.length).toBe(testData.articleData.filter(item => item.topic === "mitch").length)
+            const { articles} = body;
+            expect(articles.length).toBe(testData.articleData.filter(item => item.topic === "mitch").length)
         })
     })
 
@@ -417,8 +417,8 @@ describe("GET/api/articles?topicquery", () => {
         .get("/api/articles?topic=paper")
         .expect(200)
         .then(({body}) => {
-            const { artilesOfThisTopic } = body;
-            expect(artilesOfThisTopic.length).toBe(0)
+            const { articles } = body;
+            expect(articles.length).toBe(0)
         })
     })
 

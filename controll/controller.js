@@ -33,16 +33,9 @@ function getArticleById(req, res, next){
 
 function getArticles(req, res, next){
     const { topic } = req.query
-    if (!topic){
-        fetchArticles().then((arrayOfArticles) => {
-            res.status(200).send({articles : arrayOfArticles})
-        })
-        .catch(next)
-    } else {
-        Promise.all([doesTopicExist(topic), fetchArticleByTopic(topic)]).then(([_, articles]) => {
-            res.status(200).send({artilesOfThisTopic: articles})
+        fetchArticles(topic).then((articles) => {
+            res.status(200).send({articles: articles})
         }).catch(next)
-    }
 }
 
 
