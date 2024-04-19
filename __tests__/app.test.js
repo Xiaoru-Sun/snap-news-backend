@@ -450,3 +450,34 @@ describe("GET/api/articles/:article_id(comment_count)", () => {
 })
 
 
+describe("GET/api/articles(sorting queries)", () => {
+    test("Return an array of aritcles sorted by votes in asc order as specified", () => {
+        return request(app)
+        .get("/api/articles?sort_by=votes&&order=asc")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles).toBeSortedBy("votes", {descending : false})
+        })
+    })
+
+    test("Return 400 error when passing in a sort_by that is non-existent", () => {
+        return request(app)
+        .get("/api/articles?sort_by=weather&&order=asc")
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe("Bad request")
+        })
+    })
+
+    test("Return 400 error when passing in a valid sort_by but order is invalid", () => {
+        return request(app)
+        .get("/api/articles?sort_by=weather&&order=Default")
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe("Bad request")
+        })
+    })
+})

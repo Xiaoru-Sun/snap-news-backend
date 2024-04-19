@@ -30,20 +30,34 @@ function fetchArticleById(article_id){
 }
 
 
-function fetchArticles(topic){
-    const validTopics = testData.topicData.map(obj => obj.slug)
-    // console.log(topic === undefined)
-    if( topic === undefined){
-        const sqlStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST (COUNT(comments.body) AS INT) as comment_count
+function fetchArticles(topic, sort_by = "created_at", order = "DESC"){
+    const validTopics = testData.topicData.map(obj => obj.slug.toUpperCase());
+    const validSortBys = Object.keys(testData.articleData[0]).map(key => key.toUpperCase());
+    const validOrders = ["DESC", "ASC"];
+
+    if(topic === undefined){
+        let sqlStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST (COUNT(comments.body) AS INT) as comment_count
         FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
-        GROUP by articles.article_id
-        ORDER BY created_at DESC;`
+        GROUP BY articles.article_id `
+
+
+        if (!validSortBys.includes(sort_by.toUpperCase()) || !validOrders.includes(order.toUpperCase())){
+            return Promise.reject({
+                status: 400,
+                msg : "Bad request"
+            })
+        } else {
+
+            sqlStr += `ORDER BY ${sort_by} ${order};`
+        }
         return db.query(sqlStr).then(({rows}) => {
             return rows;
         })
+
+
     } else {
-        if(!validTopics.includes(topic)){
+        if(!validTopics.includes(topic.toUpperCase())){
             return Promise.reject({
                 status:404,
                 msg:"Topic not found"
