@@ -481,3 +481,30 @@ describe("GET/api/articles(sorting queries)", () => {
         })
     })
 })
+
+describe("GET/api/users/:username", () => {
+    test("Respond with an user object that has all the necessary keys", () => {
+        return request(app)
+        .get("/api/users/icellusedkars")
+        .expect(200)
+        .then(({body}) => {
+            const { users } = body;
+            expect(users.username).toBe("icellusedkars");
+            expect( users.name ).toBe("sam");
+            expect(users.avatar_url).toBe("https://avatars2.githubusercontent.com/u/24604688?s=460&v=4")
+        })
+    })
+
+    test("Respond with 400 error when the given username is non-existent", () => {
+        return request(app)
+        .get("/api/users/validname")
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Username not found!")
+        })
+    })
+ 
+
+})
+
