@@ -135,13 +135,31 @@ function deleteCommentById(comment_id){
     })
 }
 
-function fetchUsers(){
-    const sqlStr = format('SELECT * FROM %I;', "users")
-    return db.query(sqlStr).then(({rows}) => {
-        return rows;
-    })
+function fetchUsers(username){
+    const validUserNames = testData.userData.map(obj => obj.username);
+    let sqlStr = 'SELECT * FROM users'
+    if(!username){
+        sqlStr += ";"
+        return db.query(sqlStr).then(({rows}) => {
+            return rows;
+        })
+    } else {
+        if(!validUserNames.includes(username)){
+            return Promise.reject({
+                status:404,
+                msg:"Username not found!"
+            })
+        } else {
+            sqlStr += ' WHERE username = $1;'
+            return db.query(sqlStr, [username]).then(({rows}) => {
+                return rows[0]
+            })
+
+        }
+   
+}
 }
 
 
 
-module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers}
+module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers }
