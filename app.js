@@ -1,11 +1,12 @@
 const express = require('express');
 const app = express();
-const { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById, getUsers, getArticleByTopic} = require("./controll/controller")
+const { getTopics, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById, getUsers, getArticleByTopic} = require("./controll/controller")
+const apiRouter = require('./routes/api_router.js')
 
 app.use(express.json())
 app.get('/api/topics', getTopics)
 
-app.get('/api', getApi)
+app.use('/api', apiRouter)
 
 app.get('/api/articles/:article_id', getArticleById)
 
