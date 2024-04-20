@@ -1,5 +1,5 @@
 const users = require("../db/data/test-data/users")
-const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers } = require("../model/model")
+const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, updateCommentById, insertArticles} = require("../model/model")
 const fs = require("fs/promises")
 
 
@@ -89,5 +89,19 @@ function getUsers(req, res, next){
 }
 
 
+function patchCommentById(req, res, next){
+    const { inc_votes } = req.body;
+    const { comment_id } = req.params;
+    updateCommentById(comment_id, inc_votes).then((updatedComment) => {
+        res.status(200).send({updatedComment: updatedComment})
+    }).catch(next)
+}
 
-module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById, getUsers}
+function postArticles(req, res, next){
+    const {author, topic, body, title} = req.body;
+    insertArticles(author, topic, body, title).then((addedArticle) => {
+        res.status(200).send({addedArticle : addedArticle})
+    }).catch(next)
+}
+
+module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById, getUsers, patchCommentById, postArticles}

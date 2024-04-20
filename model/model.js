@@ -1,7 +1,7 @@
 const db = require("../db/connection")
 const format = require("pg-format");
-const topics = require("../db/data/test-data/topics");
 const testData = require("../db/data/test-data/index.js");
+const devData = require("../db/data/development-data/index.js")
 const { query } = require("express");
 
 function fetchTopics(){
@@ -120,7 +120,6 @@ function updateArticleById(article_id, inc_votes){
     return db.query(sqlStr, [inc_votes, article_id]).then(({rows}) => {
         return rows[0]
     })
-
 }
 
 function deleteCommentById(comment_id){
@@ -160,6 +159,41 @@ function fetchUsers(username){
 }
 }
 
+function updateCommentById(comment_id, inc_votes){
+    const sqlStr = `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *;`
+    return db.query(sqlStr, [inc_votes, comment_id]).then(({rows}) => {
+        if(rows.length === 0){
+            return Promise.reject({
+                status : 404,
+                msg : "Comment_id not found"
+            })
+        }
+        return rows[0];
+    })
+}
 
 
-module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers }
+function insertArticles(author, topic, body, title){
+    const queryVals = []
+    const allTopics = testData.topicData.concat(devData.topicData);
+    const allAuthors = testData.userData.concat(devData.userData);
+    const validTopics = allTopics.map(topicObj => topicObj.slug);
+    const validAuthors = allAuthors.map(authorObj => authorObj.username);
+    if(!validAuthors.includes(author) || !validTopics.includes(topic)){
+        return Promise.reject({
+            status: 400,
+            msg: "Bad request"
+        })
+    } else {
+        queryVals.push(title)
+        queryVals.push(topic)
+        queryVals.push(author)
+        queryVals.push(body)
+        const sqlStr = format(`INSERT INTO articles (title, topic, author, body) VALUES %L RETURNING *;`,[queryVals])
+        return db.query(sqlStr).then(({rows}) => {
+            return rows[0]
+    })
+}}
+
+
+module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, updateCommentById, insertArticles }

@@ -504,7 +504,147 @@ describe("GET/api/users/:username", () => {
             expect(msg).toBe("Username not found!")
         })
     })
- 
-
 })
+
+describe("PATCH/api/comments/:comment_id", () => {
+    test("Respond with an object of the updated comment when comment_id exists", () => {
+        const patchBody = {inc_votes : -1 }
+        const { inc_votes } = patchBody
+        return request(app)
+        .patch("/api/comments/4")
+        .send(patchBody)
+        .expect(200)
+        .then(({body}) => {
+            const { updatedComment } = body;
+            expect(updatedComment.votes).toBe(testData.commentData[3].votes + inc_votes)
+        })
+    })
+
+    test("Respond with 404 error when comment_id is non-existent", () => {
+        const patchBody = {inc_votes : -1 }
+        return request(app)
+        .patch("/api/comments/123456")
+        .send(patchBody)
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Comment_id not found")
+        })
+    })
+
+    test("Respond with 400 error when commend_id is not existent nor numeric", () => {
+        const patchBody = {inc_votes : -1 }
+        return request(app)
+        .patch("/api/comments/numericcommentid")
+        .send(patchBody)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+        })
+    })
+    test("Respond with 400 error when comment_id is existent but patchBody has no inc_votes key", () => {
+        const patchBody = {increment_votes : -1 }
+        return request(app)
+        .patch("/api/comments/5")
+        .send(patchBody)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Assignment of a Null value to a Not Null Column")
+        })
+    })
+
+    test("Respond with 400 error when comment_id is existent but patchBody has no inc_votes key", () => {
+        const patchBody = {inc_votes : "value is not a number here"}
+        return request(app)
+        .patch("/api/comments/5")
+        .send(patchBody)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+        })
+    })
+})
+
+describe("POST/api/articles", () => {
+    test("Respond with an object of the newly added article when both author and topic are existent", () => {
+        const articleToAdd = {
+            author: "rogersop",
+            title : "I am a good title",
+            topic: "cats",
+            body: "It is all about cats"
+        }
+        return request(app)
+        .post("/api/articles")
+        .send(articleToAdd)
+        .expect(200)
+        .then(({body}) => {
+            const {addedArticle} = body;
+            expect(addedArticle.article_id).toBe(testData.articleData.length + 1)
+            expect(addedArticle.author).toBe("rogersop");
+            expect(addedArticle.title).toBe("I am a good title");
+            expect(addedArticle.body).toBe("It is all about cats");
+            expect(addedArticle.article_img_url).toBe("https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700")
+            expect(addedArticle.votes).toBe(0);
+            expect(typeof addedArticle.created_at).toBe("string");
+        })
+    })
+
+    test("Respond with 400 error when author is non-existent", () => {
+        const articleToAdd = {
+            author: "new author",
+            title : "I am a good title",
+            topic: "cats",
+            body: "It is all about cats"
+        }
+        return request(app)
+        .post("/api/articles")
+        .send(articleToAdd)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+  
+        })
+    })
+
+    test("Respond with 400 error when topic is non-existent", () => {
+        const articleToAdd = {
+            author: "rogersop",
+            title : "I am a good title",
+            topic: "crafts",
+            body: "It is all about cats"
+        }
+        return request(app)
+        .post("/api/articles")
+        .send(articleToAdd)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+  
+        })
+    })
+
+    // test.only("Respond with error when ", () => {
+    //     const articleToAdd = {
+    //         author: "rogersop",
+    //         title : null,
+    //         topic: "cats",
+    //         body: "It is all about cats",
+    //     }
+    //     return request(app)
+    //     .post("/api/articles")
+    //     .send(articleToAdd)
+    //     .expect(400)
+    //     .then(({body}) => {
+    //         const { msg } = body;
+    //         expect(msg).toBe("Bad request")
+  
+    //     })
+    // })
+})
+
 
