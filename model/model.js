@@ -189,7 +189,8 @@ function insertArticles(author, topic, body, title){
         queryVals.push(topic)
         queryVals.push(author)
         queryVals.push(body)
-        const sqlStr = format(`INSERT INTO articles (title, topic, author, body) VALUES %L RETURNING *;`,[queryVals])
+        
+        const sqlStr = format(`INSERT INTO articles (title, topic, author, body) VALUES %L RETURNING *, 0 AS comment_count;`,[queryVals])
         return db.query(sqlStr).then(({rows}) => {
             return rows[0]
     })

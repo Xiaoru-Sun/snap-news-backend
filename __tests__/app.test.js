@@ -582,6 +582,7 @@ describe("POST/api/articles", () => {
         .expect(200)
         .then(({body}) => {
             const {addedArticle} = body;
+            console.log(addedArticle)
             expect(addedArticle.article_id).toBe(testData.articleData.length + 1)
             expect(addedArticle.author).toBe("rogersop");
             expect(addedArticle.title).toBe("I am a good title");
@@ -589,6 +590,7 @@ describe("POST/api/articles", () => {
             expect(addedArticle.article_img_url).toBe("https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700")
             expect(addedArticle.votes).toBe(0);
             expect(typeof addedArticle.created_at).toBe("string");
+            expect(addedArticle.comment_count).toBe(0)
         })
     })
 
@@ -627,24 +629,6 @@ describe("POST/api/articles", () => {
   
         })
     })
-
-    // test.only("Respond with error when ", () => {
-    //     const articleToAdd = {
-    //         author: "rogersop",
-    //         title : null,
-    //         topic: "cats",
-    //         body: "It is all about cats",
-    //     }
-    //     return request(app)
-    //     .post("/api/articles")
-    //     .send(articleToAdd)
-    //     .expect(400)
-    //     .then(({body}) => {
-    //         const { msg } = body;
-    //         expect(msg).toBe("Bad request")
-  
-    //     })
-    // })
 })
 
 
