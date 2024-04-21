@@ -56,7 +56,6 @@ function fetchArticles(topic, sort_by = "created_at", order = "DESC", limit = 10
                 }) 
             }else {
                 sqlStr += ";"
-                console.log(sqlStr, "line59")
                 return db.query(sqlStr).then(({rows}) => {
                     return rows;
             })

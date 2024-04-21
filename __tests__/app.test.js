@@ -582,7 +582,6 @@ describe("POST/api/articles", () => {
         .expect(200)
         .then(({body}) => {
             const {addedArticle} = body;
-            console.log(addedArticle)
             expect(addedArticle.article_id).toBe(testData.articleData.length + 1)
             expect(addedArticle.author).toBe("rogersop");
             expect(addedArticle.title).toBe("I am a good title");
