@@ -670,7 +670,7 @@ describe("GET/api/articles(pagination)", () => {
             expect(articles.length).toBe(0)
         })
     })
-
+    
 })
 
 
@@ -710,6 +710,55 @@ describe("GET/api/articles/:article_id/comments(pagination)", () => {
         .then(({body}) => {
             const { msg } = body;
             expect(msg).toBe("Bad request")
+        })
+    })
+})
+
+describe("POST/api/topics", () => {
+    test("Return an a topic object containing the newly added topic", () => {
+        const topicToAdd = {
+            slug :"sql",
+            description: "Structured query language"
+        }
+        return request(app)
+        .post("/api/topics")
+        .send(topicToAdd)
+        .expect(200)
+        .then(({body}) => {
+            const { addedTopic } = body;
+            expect(addedTopic.slug).toBe("sql");
+            expect(addedTopic.description).toBe("Structured query language")
+        })
+    })
+
+    test("Return an 400 error when request body slug is an existent one", () => {
+        const topicToAdd = {
+            slug :"mitch",
+            description: "Structured query language"
+        }
+        return request(app)
+        .post("/api/topics")
+        .send(topicToAdd)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Assignment of value to existing primary key");
+    
+        })
+    })
+    test("Return an 400 error when slug is null", () => {
+        const topicToAdd = {
+            slug : null,
+            description: "Structured query language"
+        }
+        return request(app)
+        .post("/api/topics")
+        .send(topicToAdd)
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Assignment of a Null value to a Not Null Column");
+    
         })
     })
 })

@@ -86,7 +86,6 @@ function fetchCommentsByArticleId(article_id, limit = 10, p){
         })
     } else {
         sqlStr += ` OFFSET ($3 - 1 ) * $4;`
-        console.log(sqlStr)
         return db.query(sqlStr, [article_id, limit, p, limit]).then(({rows}) => {
             return rows;
         })
@@ -210,5 +209,12 @@ function insertArticles(author, topic, body, title){
     })
 }}
 
+function insertTopics(slug, description){
+    let sqlStr = format('INSERT INTO topics (slug, description) VALUES %L RETURNING *;', [[slug, description]])
+    return db.query(sqlStr).then(({rows}) => {
+        return rows[0];
+    })
+}
 
-module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, updateCommentById, insertArticles }
+
+module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, updateCommentById, insertArticles, insertTopics }
