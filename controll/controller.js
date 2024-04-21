@@ -1,3 +1,4 @@
+const { totalCount } = require("../db/connection")
 const users = require("../db/data/test-data/users")
 const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, updateCommentById, insertArticles} = require("../model/model")
 const fs = require("fs/promises")
@@ -42,7 +43,9 @@ function getArticles(req, res, next){
 
 function getCommentsByArticleId(req, res, next){
     const {article_id} = req.params;
-    Promise.all([doesArticleExist(article_id), fetchCommentsByArticleId(article_id)])
+    const {limit, p} = req.query;
+    //console.log(req.query)
+    Promise.all([doesArticleExist(article_id), fetchCommentsByArticleId(article_id, limit, p)])
     .then(([_, comments]) => { 
         res.status(200).send({comments : comments})
     })

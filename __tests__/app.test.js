@@ -673,3 +673,43 @@ describe("GET/api/articles(pagination)", () => {
 
 })
 
+
+describe("GET/api/articles/:article_id/comments(pagination)", () => {
+    test("Respond with 5 articles if article_id is 1 and limit is not specified and p equals 1", () => {
+        return request(app)
+        .get("/api/articles/1/comments?limit=5&&p=1")
+        .expect(200)
+        .then(({body}) => {
+            const { comments } = body;
+            expect(comments.length).toBe(5)
+        })
+    })
+    test("Respond with 1 article if article_id is 1 and limit is 5, p is 3", () => {
+        return request(app)
+        .get("/api/articles/1/comments?limit=5&&p=3")
+        .expect(200)
+        .then(({body}) => {
+            const { comments } = body;
+            expect(comments.length).toBe(1)
+        })
+    })
+    test("Respond with 400 error when limit is not numeric", () => {
+        return request(app)
+        .get("/api/articles/1/comments?limit=limit5&&p=3")
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+        })
+    })
+
+    test("Respond with 400 error when p is not numeric", () => {
+        return request(app)
+        .get("/api/articles/1/comments?limit=5&&p=page")
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+        })
+    })
+})

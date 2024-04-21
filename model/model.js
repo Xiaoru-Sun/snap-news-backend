@@ -74,13 +74,24 @@ function fetchArticles(topic, sort_by = "created_at", order = "DESC", limit = 10
         }}
 }
 
-function fetchCommentsByArticleId(article_id){
-    const sqlStr = `SELECT * FROM comments
+function fetchCommentsByArticleId(article_id, limit = 10, p){
+    let sqlStr = `SELECT * FROM comments
     WHERE article_id = $1
-    ORDER BY created_at DESC;`
-    return db.query(sqlStr, [article_id]).then(({rows}) => {
-        return rows;
-    })
+    ORDER BY created_at DESC
+    LIMIT $2`
+    if (!p){
+        sqlStr += ";"
+        return db.query(sqlStr, [article_id, limit]).then(({rows}) => {
+            return rows;
+        })
+    } else {
+        sqlStr += ` OFFSET ($3 - 1 ) * $4;`
+        console.log(sqlStr)
+        return db.query(sqlStr, [article_id, limit, p, limit]).then(({rows}) => {
+            return rows;
+        })
+    }
+  
 }
 
 function doesArticleExist(article_id){
