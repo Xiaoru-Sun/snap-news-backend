@@ -2,7 +2,7 @@
 
 This project serves as the backend for a news-related application, providing endpoints for accessing articles, comments, users. The endporints support various operations such as retrieving articles, posting comments, updating votes on articles, and so on.
 
-Find this app via https://nc-news-6eeu.onrender.com/api
+Find this app via https://project-nc-news-xiaoru-sun.onrender.com/api
 
 
 1. Clone The Repository
