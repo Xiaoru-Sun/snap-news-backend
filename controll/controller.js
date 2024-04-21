@@ -1,6 +1,6 @@
 const { totalCount } = require("../db/connection")
 const users = require("../db/data/test-data/users")
-const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, updateCommentById, insertArticles, insertTopics} = require("../model/model")
+const { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, updateCommentById, insertArticles, insertTopics, deleteArticleById} = require("../model/model")
 const fs = require("fs/promises")
 
 
@@ -113,4 +113,11 @@ function postTopics(req, res, next){
     }).catch(next)
 }
 
-module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById, getUsers, patchCommentById, postArticles, postTopics}
+function removeArticleById(req, res, next){
+    const { article_id } = req.params;
+    deleteArticleById(article_id).then(() => {
+        res.status(204).end()
+    }).catch(next)
+}
+
+module.exports = { getTopics, getApi, getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById, removeCommentById, getUsers, patchCommentById, postArticles, postTopics, removeArticleById}

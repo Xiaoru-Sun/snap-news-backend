@@ -762,3 +762,41 @@ describe("POST/api/topics", () => {
         })
     })
 })
+
+describe("DELETE/api/articles/:article_id", () => {
+    test("Return 404 error when artcile_id is non-existent", () => {
+        return request(app)
+        .delete("/api/articles/9999")
+        .expect(404)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Article_id not found")
+        })
+    })
+
+    test("Return 400 error when article_id is not numeric", () => {
+        return request(app)
+        .delete("/api/articles/deletearticle_5")
+        .expect(400)
+        .then(({body}) => {
+            const { msg } = body;
+            expect(msg).toBe("Bad request")
+        })
+    })
+    test("Return 400 error when article_id is associated with comments", () => {
+        return request(app)
+        .delete("/api/articles/3")
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe("Violates foreign key constraint")
+        })
+    })
+
+    test("Return 204 and no content when article_id is not associated with comments", () => {
+        return request(app)
+        .delete("/api/articles/4")
+        .expect(204)
+    })
+
+})

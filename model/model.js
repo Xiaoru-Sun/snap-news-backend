@@ -217,4 +217,17 @@ function insertTopics(slug, description){
 }
 
 
-module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, updateCommentById, insertArticles, insertTopics }
+function deleteArticleById(article_id){
+    const sqlStr = 'DELETE FROM articles WHERE article_id = $1 RETURNING *;'
+    return db.query(sqlStr, [article_id]).then(({rows}) => {
+        if (rows.length === 0){
+            return Promise.reject({
+                status: 404,
+                msg : "Article_id not found"
+            })
+        }
+    })
+
+}
+
+module.exports = { fetchTopics, fetchArticleById, fetchArticles, fetchCommentsByArticleId, doesArticleExist, insertCommentsByArticleId, updateArticleById, deleteCommentById, fetchUsers, updateCommentById, insertArticles, insertTopics, deleteArticleById }
