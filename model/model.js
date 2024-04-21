@@ -30,7 +30,7 @@ function fetchArticleById(article_id){
 }
 
 
-function fetchArticles(topic, sort_by = "created_at", order = "DESC"){
+function fetchArticles(topic, sort_by = "created_at", order = "DESC", limit = 10, p){
     const validTopics = testData.topicData.map(obj => obj.slug.toUpperCase());
     const validSortBys = Object.keys(testData.articleData[0]).map(key => key.toUpperCase());
     const validOrders = ["DESC", "ASC"];
@@ -39,7 +39,7 @@ function fetchArticles(topic, sort_by = "created_at", order = "DESC"){
         let sqlStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST (COUNT(comments.body) AS INT) as comment_count
         FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
-        GROUP BY articles.article_id `
+        GROUP BY articles.article_id`
 
 
         if (!validSortBys.includes(sort_by.toUpperCase()) || !validOrders.includes(order.toUpperCase())){
@@ -48,27 +48,31 @@ function fetchArticles(topic, sort_by = "created_at", order = "DESC"){
                 msg : "Bad request"
             })
         } else {
-
-            sqlStr += `ORDER BY ${sort_by} ${order};`
-        }
-        return db.query(sqlStr).then(({rows}) => {
-            return rows;
-        })
-
-
-    } else {
-        if(!validTopics.includes(topic.toUpperCase())){
-            return Promise.reject({
-                status:404,
-                msg:"Topic not found"
+            sqlStr += ` ORDER BY ${sort_by} ${order}`
+            if (p){
+                sqlStr += ` LIMIT $1 OFFSET ($2 - 1) * $3;`
+                return db.query(sqlStr, [limit, p, limit]).then(({rows}) => {
+                    return rows;
+                }) 
+            }else {
+                sqlStr += ";"
+                console.log(sqlStr, "line59")
+                return db.query(sqlStr).then(({rows}) => {
+                    return rows;
             })
+        }}
         } else {
-            const sqlStr = format('SELECT * FROM %I WHERE topic = $1;', "articles");
-            return db.query(sqlStr, [topic]).then(({rows}) => {
-                return rows;
-
-        })
-    }}
+            if(!validTopics.includes(topic.toUpperCase())){
+                return Promise.reject({
+                    status:404,
+                    msg:"Topic not found"
+                })
+            } else {
+                const sqlStr = format('SELECT * FROM %I WHERE topic = $1;', "articles");
+                return db.query(sqlStr, [topic]).then(({rows}) => {
+                    return rows;
+            })
+        }}
 }
 
 function fetchCommentsByArticleId(article_id){
@@ -192,7 +196,7 @@ function insertArticles(author, topic, body, title){
         
         const sqlStr = format(`INSERT INTO articles (title, topic, author, body) VALUES %L RETURNING *, 0 AS comment_count;`,[queryVals])
         return db.query(sqlStr).then(({rows}) => {
-            return rows[0]
+            return rows[0];
     })
 }}
 

@@ -631,4 +631,46 @@ describe("POST/api/articles", () => {
     })
 })
 
+describe("GET/api/articles(pagination)", () => {
+    test("Respond with 10 articles if limit is not specified and p equals 1", () => {
+        return request(app)
+        .get("/api/articles?p=1")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(10)
+        })
+    })
+
+    test("Respond with 3 articles when limit is 5 and p is 3", () => {
+        return request(app)
+        .get("/api/articles?limit=5&&p=3")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(4)
+        })
+    })
+
+    test("Respond with 14 articles when limit is bigger than 13", () => {
+        return request(app)
+        .get("/api/articles?limit=15")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(14)
+        })
+    })
+
+    test("Respond with an empty array when limit is bigger than 13 and p is 2", () => {
+        return request(app)
+        .get("/api/articles?limit=15&&p=2")
+        .expect(200)
+        .then(({body}) => {
+            const { articles } = body;
+            expect(articles.length).toBe(0)
+        })
+    })
+
+})
 
