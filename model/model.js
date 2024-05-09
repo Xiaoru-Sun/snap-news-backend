@@ -36,7 +36,9 @@ function fetchArticles(
   limit = 10,
   p
 ) {
-  const validTopics = testData.topicData.map((obj) => obj.slug.toUpperCase());
+  const validTopics = testData.topicData
+    .map((obj) => obj.slug.toUpperCase())
+    .concat(devData.topicData.map((obj) => obj.slug.toUpperCase()));
   const validSortBys = Object.keys(testData.articleData[0]).map((key) =>
     key.toUpperCase()
   );
@@ -120,7 +122,6 @@ function insertCommentsByArticleId(article_id, username, body) {
   const validUserNames = testData.userData
     .map((user) => user.username)
     .concat(devData.userData.map((user) => user.username));
-  console.log(validUserNames);
   if (!validUserNames.includes(username)) {
     return Promise.reject({
       status: 404,
