@@ -39,10 +39,14 @@ function fetchArticles(
   const validTopics = testData.topicData
     .map((obj) => obj.slug.toUpperCase())
     .concat(devData.topicData.map((obj) => obj.slug.toUpperCase()));
-  const validSortBys = Object.keys({
-    ...testData.articleData[0],
-    ...devData.articleData[0],
-  }).map((key) => key.toUpperCase());
+  const validSortBys = [
+    "TITLE",
+    "TOPIC",
+    "AUTHOR",
+    "CREATED_AT",
+    "VOTES",
+    "COMMENT_COUNT",
+  ];
   const validOrders = ["DESC", "ASC"];
 
   if (topic === undefined) {
