@@ -1,18 +1,8 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api",
-    "queries" : [],
-    "exampleResponse":{
-
-      "GET /api/topics": {
-        "description": "serves an array of all topics",
-        "queries": [],
-        "exampleResponse": {
-          "topics": [{ "slug": "football", "description": "Footie!" }]
-        }
-      }
-    }
+    "description": "serves up a json representation of all the available endpoints of the api"
   },
+
   "GET /api/topics": {
     "description": "serves an array of all topics",
     "queries": [],
@@ -21,8 +11,8 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "description": "serves an array of all articles, that can be filtered, sorted and paginated",
+    "queries": ["author", "topic", "sort_by", "order", "limit", "p"],
     "exampleResponse": {
       "articles": [
         {
@@ -58,10 +48,10 @@
     }
   },
 
-  "GET/api/articles/:article_id/comments": {
-    "description":"serves an array of comments for the specific artile",
-    "queries":[],
-    "exampleResponse":[
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for the specific artile",
+    "queries": [],
+    "exampleResponse": [
       {
         "comment_id": 1,
         "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
@@ -81,24 +71,27 @@
     ]
   },
 
-  "POST/api/articles/:article_id/comments": {
-    "description":"serves an object of the posted comment for the specific artile",
-    "queries":[{"username":"validUserName", "body": "I find this existence challenging" }],
-    "exampleResponse":
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves an object of the posted comment for the specific artile",
+    "queries": [
       {
-        "comment_id": 19,
-        "body": "Cinamon spieced tea is the best match for it!!",
-        "article_id": 7,
-        "author": "rogersop",
-        "votes": 0,
-        "created_at": "2024-04-16T13:59:03.978Z"
+        "username": "validUserName",
+        "body": "I find this existence challenging"
       }
-    
+    ],
+    "exampleResponse": {
+      "comment_id": 19,
+      "body": "Cinamon spieced tea is the best match for it!!",
+      "article_id": 7,
+      "author": "rogersop",
+      "votes": 0,
+      "created_at": "2024-04-16T13:59:03.978Z"
+    }
   },
-  "PATCH/api/articles/:article_id":{
-    "description":"serves an object of the specific article with updated value of votes",
-    "queries":[{ "inc_votes" : 1 }],
-    "exampleResponse":{
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an object of the specific article with updated value of votes",
+    "queries": [{ "inc_votes": 1 }],
+    "exampleResponse": {
       "article_id": 1,
       "title": "Living in the shadow of a great man",
       "topic": "mitch",
@@ -110,22 +103,20 @@
       "comment_count": 11
     }
   },
-  "DELETE /api/comments/:comment_id":{
+  "DELETE /api/comments/:comment_id": {
     "description": "serves status 204 and no content",
-    "queries":[],
-    "exampleResponse":"204"
+    "queries": [],
+    "exampleResponse": "204"
   },
 
-  "GET /api/users":{
-    "description":"serves an array of all users",
-    "queries":[],
-    "exampleResponse":
-    [
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": [
       {
         "username": "butter_bridge",
         "name": "jonny",
-        "avatar_url":
-          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
       },
       {
         "username": "icellusedkars",
@@ -134,34 +125,38 @@
       }
     ]
   },
-  "GET /api/articles (topic query)":{
-    "description":"an array of all articles of the specifid topic",
-    "queries":["topic"],
-    "exampleResponse":[
-      {"article_id":1,
-      "title":"Living in the shadow of a great man",
-      "topic":"mitch",
-      "author":"butter_bridge",
-      "body":"I find this existence challenging",
-      "created_at":"2020-07-09T20:11:00.000Z",
-      "votes":100,
-      "article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"},
+  "GET /api/articles (topic query)": {
+    "description": "an array of all articles of the specifid topic",
+    "queries": ["topic"],
+    "exampleResponse": [
+      {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 100,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      },
 
-      {"article_id":3,
-      "title":"Eight pug gifs that remind me of mitch",
-      "topic":"mitch",
-      "author":"icellusedkars",
-      "body":"some gifs",
-      "created_at":"2020-11-03T09:12:00.000Z",
-      "votes":0,
-      "article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"}
+      {
+        "article_id": 3,
+        "title": "Eight pug gifs that remind me of mitch",
+        "topic": "mitch",
+        "author": "icellusedkars",
+        "body": "some gifs",
+        "created_at": "2020-11-03T09:12:00.000Z",
+        "votes": 0,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
     ]
   },
 
-  "GET /api/articles/:article_id (comment_count)":{
-    "description":"serves an object of the specified article with comment_count",
-    "queries":[],
-    "exampleResponse":{
+  "GET /api/articles/:article_id (comment_count)": {
+    "description": "serves an object of the specified article with comment_count",
+    "queries": [],
+    "exampleResponse": {
       "article_id": 1,
       "title": "Living in the shadow of a great man",
       "topic": "mitch",
@@ -172,7 +167,16 @@
       "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
       "comment_count": 11
     }
+  },
+  "GET /api/users/:username": {
+    "description": "retrieves the user which matching the specified username",
+    "queries": [],
+    "exampleResponse": {
+      "users": {
+        "username": "username123",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    }
   }
-
-
 }
