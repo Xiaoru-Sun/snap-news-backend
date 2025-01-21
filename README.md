@@ -21,7 +21,6 @@ To run or contribute to this project, follow the steps below.
    ```
 
 2. Install Project Dependencies
-   Please make sure you have Node.js and npm package manager installed on your local machine before you start. If you have both, use the below command:
    ```sh
    npm install
    ```
