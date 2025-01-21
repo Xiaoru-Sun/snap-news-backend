@@ -2,14 +2,17 @@
 
 This project serves as the backend for my snap news application, providing endpoints for accessing articles, comments, users. The endporints support various operations such as retrieving articles, posting comments, updating votes on articles, and so on.
 
-## 
+## Link to hosted version
+[Click here to fint the API](https://project-nc-news-xiaoru-sun.onrender.com/api)
+
+## Introduction
+####  Tech Stack
 This project was built using Node, PSQL and Express, along with through testing using Jest and Supertest.
 
-Find this api via https://project-nc-news-xiaoru-sun.onrender.com/api
 
 ## Getting Started
 To run or contribute to this project, follow the steps below.
-1. Clone the repository to your local machine using one of the following commands:
+1. Clone the repository to your local machine using one of the following commands:<br>
    clone with ssh:
    ```sh
    git clone git@github.com:Xiaoru-Sun/my-bankend-project.git
