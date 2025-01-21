@@ -1,11 +1,14 @@
 ##  Snap News API
 
-This project serves as the backend for my snap news application, providing endpoints for accessing articles, comments, users. The endporints support various operations such as retrieving articles, posting comments, updating votes on articles, and so on.
+A RESTful API backend that enables full CRUD operations for [snap news project](https://github.com/Xiaoru-Sun/snap-news-web)
 
 ## Link to hosted version
 [Click here to fint the API](https://project-nc-news-xiaoru-sun.onrender.com/api)
 
 ## Introduction
+
+This project serves as the backend for my snap news application, providing endpoints for accessing articles, comments, users. The endporints support various operations such as retrieving articles, posting comments, updating votes on articles, and so on.
+
 ####  Tech Stack
 This project was built using Node, PSQL and Express, along with through testing using Jest and Supertest.
 
