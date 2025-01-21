@@ -20,12 +20,12 @@ Follow these steps to set up the project locally or contribute to it.
 1. Clone the repository to your local machine using one of the following commands:<br>
    clone with ssh:
    ```sh
-   git clone git@github.com:Xiaoru-Sun/my-bankend-project.git
+   git clone git@github.com:Xiaoru-Sun/snap-news-backend.git
    ```
 
    clone with https:
    ```sh
-   git clone https://github.com/Xiaoru-Sun/my-bankend-project.git
+   git clone https://github.com/Xiaoru-Sun/snap-news-backend.git
    ```
 
 2. Install Project Dependencies
