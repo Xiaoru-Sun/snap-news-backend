@@ -55,3 +55,15 @@ To run or contribute to this project, follow the steps below.
 Minimum versions: 
    Node.js: v21.6.1.
    PostgresSQL: 14.11
+
+
+## **Contributing**
+If you have a suggestion that would make this better, please fork the repo and create a pull request. Thanks!
+1. Fork the repository
+2. Create your Feature Branch (git checkout -b feature/AmazingFeature)
+3. Make your changes
+4. Write tests to ensure your changes work as expected
+5. Run tests to verify everything works
+6. Commit your changes (git commit -m 'Add some AmazingFeature')
+7. Push your changes to the branch(git push origin feature/AmazingFeature)
+8. Submit a pull request
